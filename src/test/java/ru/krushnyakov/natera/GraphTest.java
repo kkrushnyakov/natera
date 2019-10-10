@@ -1,4 +1,4 @@
-package ru.krushnyakovnatera;
+package ru.krushnyakov.natera;
 
 import static org.junit.Assert.assertEquals;
 
