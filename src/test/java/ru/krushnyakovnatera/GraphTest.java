@@ -30,8 +30,6 @@ public class GraphTest {
         testUndirectedGraph.addEdge(new DirectedEdge<>(TestVertex.A, TestVertex.C, 10));
     }
 
-
-
     
     @Test
     public void getPathSingleVertexTest() {

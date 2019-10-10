@@ -1,9 +1,5 @@
 package ru.krushnyakov.natera;
 
-import java.util.function.Function;
-
-import javax.print.attribute.standard.Destination;
-
 public abstract class Edge<V> {
 
     private V source;

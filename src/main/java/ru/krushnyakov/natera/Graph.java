@@ -151,7 +151,7 @@ public class Graph<V> {
                 if (minimumDistanceUnvisited.equals(destinationVertex))
                     break;
                 unvisitedVertices.remove(minimumDistanceUnvisited);
-                List<V> x = unvisitedNeighboursOf(minimumDistanceUnvisited, unvisitedVertices);
+
                 unvisitedNeighboursOf(minimumDistanceUnvisited, unvisitedVertices).forEach(v -> {
                     int distance = verticesDistances.get(minimumDistanceUnvisited)
                             + shortestEdgeBetween(minimumDistanceUnvisited, v).getWeight();

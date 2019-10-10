@@ -31,7 +31,7 @@ public class UndirectedGraph<V> extends Graph<V> {
         if (!(edge instanceof UndirectedEdge)) {
             throw new IllegalArgumentException("Only undirected edges are possible in undirected graph!");
         }
-        edges.add(edge);
+        super.addEdge(edge);
     }
 
 }
