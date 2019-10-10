@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * @author kkrushnyakov
  *
  */
-public class UndirectedGraph<V> extends Graph<V> {
+public class UndirectedGraph<V, R> extends Graph<V, R> {
 
     static {
         log = LoggerFactory.getLogger(UndirectedGraph.class);

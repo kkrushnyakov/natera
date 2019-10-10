@@ -3,6 +3,8 @@ package ru.krushnyakov.natera;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -39,6 +41,9 @@ FAQ:
  */
 @SpringBootApplication
 public class SimpleGraphLib {
+    
+    protected static Logger log = LoggerFactory.getLogger(SimpleGraphLib.class);;
+
 
     public static void main(String[] args) {
         SpringApplication.run(SimpleGraphLib.class, args);
@@ -48,9 +53,10 @@ public class SimpleGraphLib {
     public CommandLineRunner commandLineRunner(ApplicationContext context) {
         return args -> {
 
-            Graph<String> graph = new Graph<>(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
+            Graph<String, String> graph = new Graph<>(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
             
             System.out.print(graph.getPath("B", "A"));
+            log.info("graph.traverse() = {}", graph.traverse(v -> v.toString()));
         };
     }
 

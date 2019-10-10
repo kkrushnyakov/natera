@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -19,21 +20,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author kkrushnyakov
+ * @param <R>
  *
  */
-public class Graph<V> {
+public class Graph<V, R> {
 
-    protected static Logger log;
+    protected static Logger log = LoggerFactory.getLogger(Graph.class);;
 
     protected Set<V> vertices;
 
     protected Set<Edge<V>> edges;
 
     protected ReadWriteLock lock = new ReentrantReadWriteLock();
-
-    static {
-        log = LoggerFactory.getLogger(Graph.class);
-    }
 
     public Graph() {
         super();
@@ -200,4 +198,10 @@ public class Graph<V> {
                 (e1, e2) -> Integer.compare(e1.getWeight(), e2.getWeight()));
     }
 
+    public List<R> traverse(Function<V, R> function) {
+        
+        return vertices.stream().map(function).collect(Collectors.toList());
+        
+    }
+    
 }
