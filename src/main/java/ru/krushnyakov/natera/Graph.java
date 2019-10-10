@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -26,6 +28,8 @@ public class Graph<V> {
     protected Set<V> vertices;
 
     protected Set<Edge<V>> edges;
+
+    protected ReadWriteLock lock = new ReentrantReadWriteLock();
 
     static {
         log = LoggerFactory.getLogger(Graph.class);
@@ -47,11 +51,22 @@ public class Graph<V> {
     }
 
     public void addVertex(V vertex) {
-        vertices.add(vertex);
+
+        lock.writeLock().lock();
+        try {
+            vertices.add(vertex);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public void addEdge(Edge<V> edge) {
-        edges.add(edge);
+        lock.writeLock().lock();
+        try {
+            edges.add(edge);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     /**
@@ -105,74 +120,79 @@ public class Graph<V> {
 
     public List<Edge<V>> getPath(V sourceVertex, V destinationVertex) {
 
-        log.debug("Graph verticies: {}", vertices);
-        log.debug("Graph edges {}", edges);
+        lock.readLock().lock();
+        try {
 
-        List<Edge<V>> result = new ArrayList<>();
-        if (sourceVertex == null || destinationVertex == null) {
-            throw new IllegalArgumentException("Vertex can't be null");
-        }
-        if (sourceVertex.equals(destinationVertex)) {
-            return result;
-        }
-        Set<V> unvisitedVertices = new HashSet<>();
-        Map<V, Integer> verticesDistances = new HashMap<>();
-        Map<V, V> previousVertices = new HashMap<>();
+            log.debug("Graph verticies: {}", vertices);
+            log.debug("Graph edges {}", edges);
 
-        vertices.forEach(v -> {
-            unvisitedVertices.add(v);
-            verticesDistances.put(v, Integer.MAX_VALUE);
-            previousVertices.put(v, null);
-        });
+            List<Edge<V>> result = new ArrayList<>();
+            if (sourceVertex == null || destinationVertex == null) {
+                throw new IllegalArgumentException("Vertex can't be null");
+            }
+            if (sourceVertex.equals(destinationVertex)) {
+                return result;
+            }
+            Set<V> unvisitedVertices = new HashSet<>();
+            Map<V, Integer> verticesDistances = new HashMap<>();
+            Map<V, V> previousVertices = new HashMap<>();
 
-        verticesDistances.put(sourceVertex, 0);
-
-        while (!unvisitedVertices.isEmpty()) {
-            V minimumDistanceUnvisited = Collections.min(unvisitedVertices,
-                    (e1, e2) -> Integer.compare(verticesDistances.get(e1), verticesDistances.get(e2)));
-            if (minimumDistanceUnvisited.equals(destinationVertex))
-                break;
-            unvisitedVertices.remove(minimumDistanceUnvisited);
-            List<V> x = unvisitedNeighboursOf(minimumDistanceUnvisited, unvisitedVertices);
-            unvisitedNeighboursOf(minimumDistanceUnvisited, unvisitedVertices).forEach(v -> {
-                int distance = verticesDistances.get(minimumDistanceUnvisited)
-                        + shortestEdgeBetween(minimumDistanceUnvisited, v).getWeight();
-                if (distance < verticesDistances.get(v)) {
-                    verticesDistances.put(v, distance);
-                    previousVertices.put(v, minimumDistanceUnvisited);
-                }
+            vertices.forEach(v -> {
+                unvisitedVertices.add(v);
+                verticesDistances.put(v, Integer.MAX_VALUE);
+                previousVertices.put(v, null);
             });
-        }
 
-        log.debug("verticesDistances = {}", verticesDistances);
+            verticesDistances.put(sourceVertex, 0);
 
-        V v = destinationVertex;
-        List<V> pathVertices = new ArrayList<>();
+            while (!unvisitedVertices.isEmpty()) {
+                V minimumDistanceUnvisited = Collections.min(unvisitedVertices,
+                        (e1, e2) -> Integer.compare(verticesDistances.get(e1), verticesDistances.get(e2)));
+                if (minimumDistanceUnvisited.equals(destinationVertex))
+                    break;
+                unvisitedVertices.remove(minimumDistanceUnvisited);
+                List<V> x = unvisitedNeighboursOf(minimumDistanceUnvisited, unvisitedVertices);
+                unvisitedNeighboursOf(minimumDistanceUnvisited, unvisitedVertices).forEach(v -> {
+                    int distance = verticesDistances.get(minimumDistanceUnvisited)
+                            + shortestEdgeBetween(minimumDistanceUnvisited, v).getWeight();
+                    if (distance < verticesDistances.get(v)) {
+                        verticesDistances.put(v, distance);
+                        previousVertices.put(v, minimumDistanceUnvisited);
+                    }
+                });
+            }
 
-        do {
-            pathVertices.add(0, v);
-            v = previousVertices.get(v);
-        } while (v != null);
+            log.debug("verticesDistances = {}", verticesDistances);
 
-        log.debug("previousVertices = {}", previousVertices);
-        log.debug("pathVertices = {}", pathVertices);
+            V v = destinationVertex;
+            List<V> pathVertices = new ArrayList<>();
 
-        if (pathVertices.isEmpty())
+            do {
+                pathVertices.add(0, v);
+                v = previousVertices.get(v);
+            } while (v != null);
+
+            log.debug("previousVertices = {}", previousVertices);
+            log.debug("pathVertices = {}", pathVertices);
+
+            if (pathVertices.isEmpty())
+                return result;
+            v = pathVertices.get(0);
+
+            for (int i = 0; i < pathVertices.size() - 1; i++) {
+                result.add(shortestEdgeBetween(pathVertices.get(i), pathVertices.get(i + 1)));
+            }
+
             return result;
-        v = pathVertices.get(0);
-
-        for (int i = 0; i < pathVertices.size() - 1; i++) {
-            result.add(shortestEdgeBetween(pathVertices.get(i), pathVertices.get(i + 1)));
+        } finally {
+            lock.readLock().unlock();
         }
-
-        return result;
-
     }
 
     private List<V> unvisitedNeighboursOf(V v, Set<V> unvisitedVertices) {
 
-        return edges.stream().filter(e -> e.startsAt(v)).map( e -> e.getOtherVertex(v)).distinct().filter(vv -> unvisitedVertices.contains(vv))
-                .collect(Collectors.toList());
+        return edges.stream().filter(e -> e.startsAt(v)).map(e -> e.getOtherVertex(v)).distinct()
+                .filter(vv -> unvisitedVertices.contains(vv)).collect(Collectors.toList());
     }
 
     private Edge<V> shortestEdgeBetween(V vertexA, V vertexB) {
