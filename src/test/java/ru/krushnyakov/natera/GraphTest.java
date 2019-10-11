@@ -19,13 +19,13 @@ public class GraphTest {
 
     @Test
     public void addVertexTest() {
-        Graph<TestVertex, String> testUndirectedGraph = new Graph<>();
+        Graph<TestVertex> testUndirectedGraph = new Graph<>();
         testUndirectedGraph.addVertex(TestVertex.G);
     }
 
     @Test
     public void addEdgeTest() {
-        Graph<TestVertex, String> testUndirectedGraph = new Graph<>();
+        Graph<TestVertex> testUndirectedGraph = new Graph<>();
         testUndirectedGraph.addEdge(new UndirectedEdge<>(TestVertex.A, TestVertex.E));
         testUndirectedGraph.addEdge(new DirectedEdge<>(TestVertex.A, TestVertex.C, 10));
     }
@@ -40,7 +40,7 @@ public class GraphTest {
          
 */
         
-        Graph<TestVertex, String> graph = new Graph<>(
+        Graph<TestVertex> graph = new Graph<>(
                 new HashSet<>(Arrays.asList(TestVertex.A)),
                 new HashSet<>());
         
@@ -55,7 +55,7 @@ public class GraphTest {
 
 */
       
-      Graph<String, String> graph = new Graph<>(
+      Graph<String> graph = new Graph<>(
               new HashSet<>(Arrays.asList("A", "B", "C")),
               new HashSet<>(Arrays.asList(
                                           new UndirectedEdge<>("A", "B", 10)
@@ -88,7 +88,7 @@ public class GraphTest {
              C---7----F-----+-------+   
          */
         
-        Graph<TestVertex, String> graph = new Graph<>(
+        Graph<TestVertex> graph = new Graph<>(
                 new HashSet<>(Arrays.asList(TestVertex.A, TestVertex.B, TestVertex.C, TestVertex.E, TestVertex.D, TestVertex.F, TestVertex.G)),
                 new HashSet<>(Arrays.asList(
                                             new UndirectedEdge<>(TestVertex.A, TestVertex.B, 5),
@@ -132,7 +132,7 @@ public class GraphTest {
         C---7----F<----+-------+   
 */
 
-        Graph<TestVertex, String> graph = new Graph<>(
+        Graph<TestVertex> graph = new Graph<>(
                 new HashSet<>(Arrays.asList(TestVertex.A, TestVertex.B, TestVertex.C, TestVertex.E, TestVertex.D, TestVertex.F)),
                 new HashSet<>(Arrays.asList(new UndirectedEdge<>(TestVertex.A, TestVertex.B, 5),
                                             new UndirectedEdge<>(TestVertex.A, TestVertex.D, 7),
@@ -161,14 +161,14 @@ public class GraphTest {
     
     @Test
     public void oneMoreTestWithStringsAndNoWeights() {
-        Graph<String, String> graph = new Graph<>(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
+        Graph<String> graph = new Graph<>(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
         
         assertEquals(Arrays.asList(new UndirectedEdge<>("A", "B")), graph.getPath("B", "A"));
     }
     
     @Test
     public void traverseTest() {
-        Graph<String, String> graph = new Graph<>(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
+        Graph<String> graph = new Graph<>(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
         
         assertEquals(Arrays.asList("AA", "BB"), graph.traverse(v -> v.toString() + v.toString()));
     }

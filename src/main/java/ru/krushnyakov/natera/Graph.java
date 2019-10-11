@@ -20,10 +20,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author kkrushnyakov
- * @param <R>
+ * @param <V> vertices type 
  *
  */
-public class Graph<V, R> {
+public class Graph<V> {
 
     protected static Logger log = LoggerFactory.getLogger(Graph.class);;
 
@@ -198,7 +198,7 @@ public class Graph<V, R> {
                 (e1, e2) -> Integer.compare(e1.getWeight(), e2.getWeight()));
     }
 
-    public List<R> traverse(Function<V, R> function) {
+    public List<?> traverse(Function<V, ?> function) {
         
         return vertices.stream().map(function).collect(Collectors.toList());
         
