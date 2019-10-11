@@ -23,23 +23,21 @@ import org.slf4j.LoggerFactory;
  * @param <V> vertices type 
  *
  */
-public class Graph<V> {
+public class DirectedGraph<V> implements Graph<V> {
 
-    protected static Logger log = LoggerFactory.getLogger(Graph.class);;
+    protected static Logger log = LoggerFactory.getLogger(DirectedGraph.class);;
 
     protected Set<V> vertices;
 
     protected Set<Edge<V>> edges;
 
-    protected ReadWriteLock lock = new ReentrantReadWriteLock();
-
-    public Graph() {
+    public DirectedGraph() {
         super();
         this.vertices = new HashSet<V>();
         this.edges = new HashSet<Edge<V>>();
     }
 
-    public Graph(Set<V> vertices, Set<Edge<V>> edges) {
+    public DirectedGraph(Set<V> vertices, Set<Edge<V>> edges) {
 
         if (vertices == null || edges == null) {
             throw new IllegalArgumentException("Edges and Verticles can't be null!");
@@ -48,23 +46,14 @@ public class Graph<V> {
         this.edges = edges;
     }
 
+    @Override
     public void addVertex(V vertex) {
-
-        lock.writeLock().lock();
-        try {
-            vertices.add(vertex);
-        } finally {
-            lock.writeLock().unlock();
-        }
+        vertices.add(vertex);
     }
 
+    @Override
     public void addEdge(Edge<V> edge) {
-        lock.writeLock().lock();
-        try {
-            edges.add(edge);
-        } finally {
-            lock.writeLock().unlock();
-        }
+        edges.add(edge);
     }
 
     /**
@@ -116,75 +105,70 @@ public class Graph<V> {
      * @return List of edges contained in the result path
      */
 
+    @Override
     public List<Edge<V>> getPath(V sourceVertex, V destinationVertex) {
 
-        lock.readLock().lock();
-        try {
+        log.debug("Graph verticies: {}", vertices);
+        log.debug("Graph edges {}", edges);
 
-            log.debug("Graph verticies: {}", vertices);
-            log.debug("Graph edges {}", edges);
-
-            List<Edge<V>> result = new ArrayList<>();
-            if (sourceVertex == null || destinationVertex == null) {
-                throw new IllegalArgumentException("Vertex can't be null");
-            }
-            if (sourceVertex.equals(destinationVertex)) {
-                return result;
-            }
-            Set<V> unvisitedVertices = new HashSet<>();
-            Map<V, Integer> verticesDistances = new HashMap<>();
-            Map<V, V> previousVertices = new HashMap<>();
-
-            vertices.forEach(v -> {
-                unvisitedVertices.add(v);
-                verticesDistances.put(v, Integer.MAX_VALUE);
-                previousVertices.put(v, null);
-            });
-
-            verticesDistances.put(sourceVertex, 0);
-
-            while (!unvisitedVertices.isEmpty()) {
-                V minimumDistanceUnvisited = Collections.min(unvisitedVertices,
-                        (e1, e2) -> Integer.compare(verticesDistances.get(e1), verticesDistances.get(e2)));
-                if (minimumDistanceUnvisited.equals(destinationVertex))
-                    break;
-                unvisitedVertices.remove(minimumDistanceUnvisited);
-
-                unvisitedNeighboursOf(minimumDistanceUnvisited, unvisitedVertices).forEach(v -> {
-                    int distance = verticesDistances.get(minimumDistanceUnvisited)
-                            + shortestEdgeBetween(minimumDistanceUnvisited, v).getWeight();
-                    if (distance < verticesDistances.get(v)) {
-                        verticesDistances.put(v, distance);
-                        previousVertices.put(v, minimumDistanceUnvisited);
-                    }
-                });
-            }
-
-            log.debug("verticesDistances = {}", verticesDistances);
-
-            V v = destinationVertex;
-            List<V> pathVertices = new ArrayList<>();
-
-            do {
-                pathVertices.add(0, v);
-                v = previousVertices.get(v);
-            } while (v != null);
-
-            log.debug("previousVertices = {}", previousVertices);
-            log.debug("pathVertices = {}", pathVertices);
-
-            if (pathVertices.isEmpty())
-                return result;
-            v = pathVertices.get(0);
-
-            for (int i = 0; i < pathVertices.size() - 1; i++) {
-                result.add(shortestEdgeBetween(pathVertices.get(i), pathVertices.get(i + 1)));
-            }
-
-            return result;
-        } finally {
-            lock.readLock().unlock();
+        List<Edge<V>> result = new ArrayList<>();
+        if (sourceVertex == null || destinationVertex == null) {
+            throw new IllegalArgumentException("Vertex can't be null");
         }
+        if (sourceVertex.equals(destinationVertex)) {
+            return result;
+        }
+        Set<V> unvisitedVertices = new HashSet<>();
+        Map<V, Integer> verticesDistances = new HashMap<>();
+        Map<V, V> previousVertices = new HashMap<>();
+
+        vertices.forEach(v -> {
+            unvisitedVertices.add(v);
+            verticesDistances.put(v, Integer.MAX_VALUE);
+            previousVertices.put(v, null);
+        });
+
+        verticesDistances.put(sourceVertex, 0);
+
+        while (!unvisitedVertices.isEmpty()) {
+            V minimumDistanceUnvisited = Collections.min(unvisitedVertices,
+                    (e1, e2) -> Integer.compare(verticesDistances.get(e1), verticesDistances.get(e2)));
+            if (minimumDistanceUnvisited.equals(destinationVertex))
+                break;
+            unvisitedVertices.remove(minimumDistanceUnvisited);
+
+            unvisitedNeighboursOf(minimumDistanceUnvisited, unvisitedVertices).forEach(v -> {
+                int distance = verticesDistances.get(minimumDistanceUnvisited)
+                        + shortestEdgeBetween(minimumDistanceUnvisited, v).getWeight();
+                if (distance < verticesDistances.get(v)) {
+                    verticesDistances.put(v, distance);
+                    previousVertices.put(v, minimumDistanceUnvisited);
+                }
+            });
+        }
+
+        log.debug("verticesDistances = {}", verticesDistances);
+
+        V v = destinationVertex;
+        List<V> pathVertices = new ArrayList<>();
+
+        do {
+            pathVertices.add(0, v);
+            v = previousVertices.get(v);
+        } while (v != null);
+
+        log.debug("previousVertices = {}", previousVertices);
+        log.debug("pathVertices = {}", pathVertices);
+
+        if (pathVertices.isEmpty())
+            return result;
+        v = pathVertices.get(0);
+
+        for (int i = 0; i < pathVertices.size() - 1; i++) {
+            result.add(shortestEdgeBetween(pathVertices.get(i), pathVertices.get(i + 1)));
+        }
+
+        return result;
     }
 
     private List<V> unvisitedNeighboursOf(V v, Set<V> unvisitedVertices) {
@@ -198,10 +182,64 @@ public class Graph<V> {
                 (e1, e2) -> Integer.compare(e1.getWeight(), e2.getWeight()));
     }
 
+    @Override
     public List<?> traverse(Function<V, ?> function) {
-        
+
         return vertices.stream().map(function).collect(Collectors.toList());
-        
+    }
+
+    public Graph<V> synchronizedGraph() {
+        return this.new SynchronizedDirectedGraph();
     }
     
+    private class SynchronizedDirectedGraph implements Graph<V> {
+
+        private ReadWriteLock lock = new ReentrantReadWriteLock();
+
+        public void addVertex(V vertex) {
+            lock.writeLock().lock();
+            try {
+                DirectedGraph.this.addVertex(vertex);
+            } finally {
+                lock.writeLock().unlock();
+            }
+        }
+
+        @Override
+        public void addEdge(Edge<V> edge) {
+            lock.writeLock().lock();
+            try {
+                DirectedGraph.this.addEdge(edge);
+            } finally {
+                lock.writeLock().unlock();
+            }
+        }
+
+        @Override
+        public List<Edge<V>> getPath(V sourceVertex, V destinationVertex) {
+            lock.writeLock().lock();
+            try {
+                return DirectedGraph.this.getPath(sourceVertex, destinationVertex);
+            } finally {
+                lock.writeLock().unlock();
+            }
+        }
+
+        @Override
+        public List<?> traverse(Function<V, ?> function) {
+            lock.writeLock().lock();
+            try {
+                return DirectedGraph.this.traverse(function);
+            } finally {
+                lock.writeLock().unlock();
+            }
+
+        }
+
+        @Override
+        public Graph<V> synchronizedGraph() {
+            return this;
+        }
+
+    }
 }
