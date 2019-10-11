@@ -11,6 +11,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import ru.krushnyakov.natera.graph.DirectedEdge;
+import ru.krushnyakov.natera.graph.DirectedGraph;
+import ru.krushnyakov.natera.graph.Graph;
+import ru.krushnyakov.natera.graph.UndirectedEdge;
+
 /*
 
 Should support 2 types of graphs - directed and undirected with 3 operations:
@@ -53,7 +58,7 @@ public class SimpleGraphLib {
     public CommandLineRunner commandLineRunner(ApplicationContext context) {
         return args -> {
 
-            DirectedGraph<String> graph = new DirectedGraph<>(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
+            Graph<String> graph = DirectedGraph.create(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
             
             System.out.print(graph.getPath("B", "A"));
             log.info("graph.traverse() = {}", graph.traverse(v -> v.toString()));

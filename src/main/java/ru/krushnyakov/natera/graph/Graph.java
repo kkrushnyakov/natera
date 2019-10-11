@@ -1,4 +1,4 @@
-package ru.krushnyakov.natera;
+package ru.krushnyakov.natera.graph;
 
 import java.util.List;
 import java.util.function.Function;
@@ -19,7 +19,5 @@ public interface Graph<V> {
     List<Edge<V>> getPath(V sourceVertex, V destinationVertex);
 
     List<?> traverse(Function<V, ?> function);
-
-    Graph<V> synchronizedGraph();
 
 }

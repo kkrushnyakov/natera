@@ -1,34 +1,34 @@
-package ru.krushnyakov.natera;
+package ru.krushnyakov.natera.graph;
 
-public class DirectedEdge<V> extends Edge<V> {
+public class UndirectedEdge<V> extends Edge<V> {
 
-    public DirectedEdge(V source, V destination) {
+    public UndirectedEdge(V source, V destination) {
         super(source, destination);
     }
 
-    public DirectedEdge(V source, V destination, int weight) {
+    public UndirectedEdge(V source, V destination, int weight) {
         super(source, destination, weight);
     }
 
     @Override
     public boolean startsAt(V vertex) {
-        return getSource().equals(vertex);
+        return getSource().equals(vertex) || getDestination().equals(vertex);
     }
 
     @Override
     public boolean endsAt(V vertex) {
-        return getDestination().equals(vertex);
+        return getSource().equals(vertex) || getDestination().equals(vertex);
     }
 
     @Override
     public String toString() {
-        return "[" + getSource() + "]>--" + getWeight() + "-->[" + getDestination() + "]";
+        return "[" + getSource() + "]---" + getWeight() + "---[" + getDestination() + "]";
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = getDestination().hashCode() + prime * getSource().hashCode();
+        int result = getDestination().hashCode() + getSource().hashCode();
         result = prime * result + getWeight();
         return result;
     }
@@ -45,12 +45,14 @@ public class DirectedEdge<V> extends Edge<V> {
         Edge<V> other = (Edge<V>) obj;
         if (getWeight() != other.getWeight())
             return false;
-        return (getSource().equals(other.getSource()) && getDestination().equals(other.getDestination()));
+        return (getSource().equals(other.getSource()) && getDestination().equals(other.getDestination())
+                || (getSource().equals(other.getDestination()) && getDestination().equals(other.getSource())));
     }
 
     @Override
     public boolean connectsVertices(V vertexA, V vertexB) {
-        return getSource().equals(vertexA) && getDestination().equals(vertexB);
-    }
+        return (getSource().equals(vertexA) && getDestination().equals(vertexB)) || (getSource().equals(vertexB) && getDestination().equals(vertexA));
+
+   }
 
 }

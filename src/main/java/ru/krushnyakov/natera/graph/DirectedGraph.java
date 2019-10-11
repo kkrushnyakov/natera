@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.krushnyakov.natera;
+package ru.krushnyakov.natera.graph;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,13 +31,13 @@ public class DirectedGraph<V> implements Graph<V> {
 
     protected Set<Edge<V>> edges;
 
-    public DirectedGraph() {
+    protected DirectedGraph() {
         super();
         this.vertices = new HashSet<V>();
         this.edges = new HashSet<Edge<V>>();
     }
 
-    public DirectedGraph(Set<V> vertices, Set<Edge<V>> edges) {
+    protected DirectedGraph(Set<V> vertices, Set<Edge<V>> edges) {
 
         if (vertices == null || edges == null) {
             throw new IllegalArgumentException("Edges and Verticles can't be null!");
@@ -170,30 +170,43 @@ public class DirectedGraph<V> implements Graph<V> {
 
         return result;
     }
-
-    private List<V> unvisitedNeighboursOf(V v, Set<V> unvisitedVertices) {
-
-        return edges.stream().filter(e -> e.startsAt(v)).map(e -> e.getOtherVertex(v)).distinct()
-                .filter(vv -> unvisitedVertices.contains(vv)).collect(Collectors.toList());
-    }
-
-    private Edge<V> shortestEdgeBetween(V vertexA, V vertexB) {
-        return Collections.min(edges.stream().filter(e -> e.connectsVertices(vertexA, vertexB)).collect(Collectors.toList()),
-                (e1, e2) -> Integer.compare(e1.getWeight(), e2.getWeight()));
-    }
-
     @Override
     public List<?> traverse(Function<V, ?> function) {
 
         return vertices.stream().map(function).collect(Collectors.toList());
     }
 
-    public Graph<V> synchronizedGraph() {
-        return this.new SynchronizedDirectedGraph();
+    public static <V> Graph<V> create(Set<V> vertices, Set<Edge<V>> edges) {
+
+        return new DirectedGraph<>(vertices, edges);
+    }
+    
+    public static <V> Graph<V> create() {
+        return new DirectedGraph<>();
+    }
+
+    
+    public static <V> Graph<V> createSynchronized(Set<V> vertices, Set<Edge<V>> edges) {
+        return new DirectedGraph<>(vertices, edges).new SynchronizedDirectedGraph();
+    }
+    
+    public static <V> Graph<V> createSynchronized() {
+        return new DirectedGraph<V>().new SynchronizedDirectedGraph();
+    }
+    
+    private List<V> unvisitedNeighboursOf(V v, Set<V> unvisitedVertices) {
+        
+        return edges.stream().filter(e -> e.startsAt(v)).map(e -> e.getOtherVertex(v)).distinct()
+                .filter(vv -> unvisitedVertices.contains(vv)).collect(Collectors.toList());
+    }
+    
+    private Edge<V> shortestEdgeBetween(V vertexA, V vertexB) {
+        return Collections.min(edges.stream().filter(e -> e.connectsVertices(vertexA, vertexB)).collect(Collectors.toList()),
+                (e1, e2) -> Integer.compare(e1.getWeight(), e2.getWeight()));
     }
     
     private class SynchronizedDirectedGraph implements Graph<V> {
-
+        
         private ReadWriteLock lock = new ReentrantReadWriteLock();
 
         public void addVertex(V vertex) {
@@ -236,10 +249,6 @@ public class DirectedGraph<V> implements Graph<V> {
 
         }
 
-        @Override
-        public Graph<V> synchronizedGraph() {
-            return this;
-        }
-
     }
+
 }
