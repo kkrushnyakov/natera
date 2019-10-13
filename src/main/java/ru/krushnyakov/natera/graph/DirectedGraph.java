@@ -15,9 +15,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author kkrushnyakov
  * @param <V> vertices type 
@@ -25,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DirectedGraph<V> implements Graph<V> {
 
-    protected static Logger log = LoggerFactory.getLogger(DirectedGraph.class);;
+//    protected static Logger log = LoggerFactory.getLogger(DirectedGraph.class);
 
     protected Set<V> vertices;
 
@@ -108,8 +105,8 @@ public class DirectedGraph<V> implements Graph<V> {
     @Override
     public List<Edge<V>> getPath(V sourceVertex, V destinationVertex) {
 
-        log.debug("Graph verticies: {}", vertices);
-        log.debug("Graph edges {}", edges);
+//        log.debug("Graph verticies: {}", vertices);
+//        log.debug("Graph edges {}", edges);
 
         List<Edge<V>> result = new ArrayList<>();
         if (sourceVertex == null || destinationVertex == null) {
@@ -147,7 +144,7 @@ public class DirectedGraph<V> implements Graph<V> {
             });
         }
 
-        log.debug("verticesDistances = {}", verticesDistances);
+//        log.debug("verticesDistances = {}", verticesDistances);
 
         V v = destinationVertex;
         List<V> pathVertices = new ArrayList<>();
@@ -157,8 +154,8 @@ public class DirectedGraph<V> implements Graph<V> {
             v = previousVertices.get(v);
         } while (v != null);
 
-        log.debug("previousVertices = {}", previousVertices);
-        log.debug("pathVertices = {}", pathVertices);
+//        log.debug("previousVertices = {}", previousVertices);
+//        log.debug("pathVertices = {}", pathVertices);
 
         if (pathVertices.isEmpty())
             return result;

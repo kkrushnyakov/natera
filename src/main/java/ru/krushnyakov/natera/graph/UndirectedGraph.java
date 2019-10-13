@@ -5,8 +5,6 @@ package ru.krushnyakov.natera.graph;
 
 import java.util.Set;
 
-import org.slf4j.LoggerFactory;
-
 /**
  * @author kkrushnyakov
  *
@@ -14,7 +12,7 @@ import org.slf4j.LoggerFactory;
 public class UndirectedGraph<V> extends DirectedGraph<V> {
 
     static {
-        log = LoggerFactory.getLogger(UndirectedGraph.class);
+//        log = LoggerFactory.getLogger(UndirectedGraph.class);
     }
 
     public UndirectedGraph() {
