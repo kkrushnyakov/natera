@@ -25,11 +25,12 @@ public class UndirectedGraph<V> extends DirectedGraph<V> {
     }
 
     @Override
-    public void addEdge(Edge<V> edge) {
+    public Graph<V> addEdge(Edge<V> edge) {
         if (!(edge instanceof UndirectedEdge)) {
             throw new IllegalArgumentException("Only undirected edges are possible in undirected graph!");
         }
         super.addEdge(edge);
+        return this;
     }
 
 }

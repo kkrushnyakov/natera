@@ -44,9 +44,12 @@ public class SimpleGraphLibDemo {
         
         System.out.println(graph.getPath("B", "A"));
 
-        Graph<String> synchGraph = SimpleGraphLib.getSynchronyzedGraphFactory().createUndirectedGraph(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"))));
-        
-        System.out.println(synchGraph.getPath("B", "A"));
+        System.out.println(
+                SimpleGraphLib.getSynchronyzedGraphFactory().<String>createUndirectedGraph()
+                                                                                    .addVertex("A")
+                                                                                    .addVertex("B")
+                                                                                    .addEdge(new UndirectedEdge<>("A", "B"))
+                                                                                    .getPath("B", "A"));
 
     }
 

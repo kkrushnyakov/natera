@@ -5,9 +5,9 @@ import java.util.function.Function;
 
 public interface Graph<V> {
 
-    void addVertex(V vertex);
+    Graph<V> addVertex(V vertex);
 
-    void addEdge(Edge<V> edge);
+    Graph<V> addEdge(Edge<V> edge);
 
     /**
      *

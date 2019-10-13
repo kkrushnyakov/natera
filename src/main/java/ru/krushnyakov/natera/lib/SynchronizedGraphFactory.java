@@ -40,23 +40,26 @@ private class SynchronizedGraphDecorator<V> implements Graph<V> {
             this.graph = graph;
         }
         
-        public void addVertex(V vertex) {
+        public Graph<V> addVertex(V vertex) {
             lock.writeLock().lock();
             try {
                 graph.addVertex(vertex);
             } finally {
                 lock.writeLock().unlock();
             }
+            
+            return this;
         }
 
         @Override
-        public void addEdge(Edge<V> edge) {
+        public Graph<V> addEdge(Edge<V> edge) {
             lock.writeLock().lock();
             try {
                 graph.addEdge(edge);
             } finally {
                 lock.writeLock().unlock();
             }
+            return this;
         }
 
         @Override

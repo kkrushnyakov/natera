@@ -42,13 +42,15 @@ public class DirectedGraph<V> implements Graph<V> {
     }
 
     @Override
-    public void addVertex(V vertex) {
+    public Graph<V> addVertex(V vertex) {
         vertices.add(vertex);
+        return this;
     }
 
     @Override
-    public void addEdge(Edge<V> edge) {
+    public Graph<V> addEdge(Edge<V> edge) {
         edges.add(edge);
+        return this;
     }
 
     /**
