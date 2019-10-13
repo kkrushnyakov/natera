@@ -1,4 +1,4 @@
-package ru.krushnyakov.natera.graph;
+package ru.krushnyakov.natera.lib;
 
 public abstract class Edge<V> {
 

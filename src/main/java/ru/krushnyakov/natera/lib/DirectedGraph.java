@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.krushnyakov.natera.graph;
+package ru.krushnyakov.natera.lib;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -173,24 +171,6 @@ public class DirectedGraph<V> implements Graph<V> {
         return vertices.stream().map(function).collect(Collectors.toList());
     }
 
-    public static <V> Graph<V> create(Set<V> vertices, Set<Edge<V>> edges) {
-
-        return new DirectedGraph<>(vertices, edges);
-    }
-    
-    public static <V> Graph<V> create() {
-        return new DirectedGraph<>();
-    }
-
-    
-    public static <V> Graph<V> createSynchronized(Set<V> vertices, Set<Edge<V>> edges) {
-        return new DirectedGraph<>(vertices, edges).new SynchronizedDirectedGraph();
-    }
-    
-    public static <V> Graph<V> createSynchronized() {
-        return new DirectedGraph<V>().new SynchronizedDirectedGraph();
-    }
-    
     private List<V> unvisitedNeighboursOf(V v, Set<V> unvisitedVertices) {
         
         return edges.stream().filter(e -> e.startsAt(v)).map(e -> e.getOtherVertex(v)).distinct()
@@ -202,50 +182,6 @@ public class DirectedGraph<V> implements Graph<V> {
                 (e1, e2) -> Integer.compare(e1.getWeight(), e2.getWeight()));
     }
     
-    private class SynchronizedDirectedGraph implements Graph<V> {
-        
-        private ReadWriteLock lock = new ReentrantReadWriteLock();
-
-        public void addVertex(V vertex) {
-            lock.writeLock().lock();
-            try {
-                DirectedGraph.this.addVertex(vertex);
-            } finally {
-                lock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public void addEdge(Edge<V> edge) {
-            lock.writeLock().lock();
-            try {
-                DirectedGraph.this.addEdge(edge);
-            } finally {
-                lock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public List<Edge<V>> getPath(V sourceVertex, V destinationVertex) {
-            lock.writeLock().lock();
-            try {
-                return DirectedGraph.this.getPath(sourceVertex, destinationVertex);
-            } finally {
-                lock.writeLock().unlock();
-            }
-        }
-
-        @Override
-        public List<?> traverse(Function<V, ?> function) {
-            lock.writeLock().lock();
-            try {
-                return DirectedGraph.this.traverse(function);
-            } finally {
-                lock.writeLock().unlock();
-            }
-
-        }
-
-    }
+    
 
 }

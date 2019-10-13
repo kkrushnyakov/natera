@@ -1,4 +1,4 @@
-package ru.krushnyakov.natera.graph;
+package ru.krushnyakov.natera.lib;
 
 public class UndirectedEdge<V> extends Edge<V> {
 

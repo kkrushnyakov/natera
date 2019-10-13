@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.krushnyakov.natera.graph;
+package ru.krushnyakov.natera.lib;
 
 import java.util.Set;
 

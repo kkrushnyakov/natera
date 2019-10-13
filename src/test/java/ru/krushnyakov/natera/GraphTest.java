@@ -7,11 +7,10 @@ import java.util.HashSet;
 
 import org.junit.Test;
 
-import ru.krushnyakov.natera.graph.DirectedEdge;
-import ru.krushnyakov.natera.graph.DirectedGraph;
-import ru.krushnyakov.natera.graph.Graph;
-import ru.krushnyakov.natera.graph.UndirectedEdge;
-import ru.krushnyakov.natera.graph.UndirectedGraph;
+import ru.krushnyakov.natera.lib.DirectedEdge;
+import ru.krushnyakov.natera.lib.Graph;
+import ru.krushnyakov.natera.lib.SimpleGraphLib;
+import ru.krushnyakov.natera.lib.UndirectedEdge;
 
 public class GraphTest {
 
@@ -21,13 +20,13 @@ public class GraphTest {
 
     @Test
     public void addVertexTest() {
-        Graph<TestVertex> testUndirectedGraph = DirectedGraph.create();
+        Graph<TestVertex> testUndirectedGraph = SimpleGraphLib.getGraphFactory().createUndirectedGraph();
         testUndirectedGraph.addVertex(TestVertex.G);
     }
 
     @Test
     public void addEdgeTest() {
-        Graph<TestVertex> testUndirectedGraph = DirectedGraph.create();
+        Graph<TestVertex> testUndirectedGraph = SimpleGraphLib.getSynchronyzedGraphFactory().createDirectedGraph();
         testUndirectedGraph.addEdge(new UndirectedEdge<>(TestVertex.A, TestVertex.E));
         testUndirectedGraph.addEdge(new DirectedEdge<>(TestVertex.A, TestVertex.C, 10));
     }
@@ -42,7 +41,7 @@ public class GraphTest {
          
 */
         
-        Graph<TestVertex> graph = DirectedGraph.create(
+        Graph<TestVertex> graph = SimpleGraphLib.getGraphFactory().createDirectedGraph(
                 new HashSet<>(Arrays.asList(TestVertex.A)),
                 new HashSet<>());
         
@@ -57,7 +56,7 @@ public class GraphTest {
 
 */
       
-      Graph<String> graph = DirectedGraph.create(
+      Graph<String> graph = SimpleGraphLib.getGraphFactory().createDirectedGraph(
               new HashSet<>(Arrays.asList("A", "B", "C")),
               new HashSet<>(Arrays.asList(
                                           new UndirectedEdge<>("A", "B", 10)
@@ -90,7 +89,7 @@ public class GraphTest {
              C---7----F-----+-------+   
          */
         
-        Graph<TestVertex> graph = DirectedGraph.create(
+        Graph<TestVertex> graph = SimpleGraphLib.getGraphFactory().createDirectedGraph(
                 new HashSet<>(Arrays.asList(TestVertex.A, TestVertex.B, TestVertex.C, TestVertex.E, TestVertex.D, TestVertex.F, TestVertex.G)),
                 new HashSet<>(Arrays.asList(
                                             new UndirectedEdge<>(TestVertex.A, TestVertex.B, 5),
@@ -134,7 +133,7 @@ public class GraphTest {
         C---7----F<----+-------+   
 */
 
-        Graph<TestVertex> graph = DirectedGraph.create(
+        Graph<TestVertex> graph = SimpleGraphLib.getGraphFactory().createDirectedGraph(
                 new HashSet<>(Arrays.asList(TestVertex.A, TestVertex.B, TestVertex.C, TestVertex.E, TestVertex.D, TestVertex.F)),
                 new HashSet<>(Arrays.asList(new UndirectedEdge<>(TestVertex.A, TestVertex.B, 5),
                                             new UndirectedEdge<>(TestVertex.A, TestVertex.D, 7),
@@ -163,14 +162,14 @@ public class GraphTest {
     
     @Test
     public void oneMoreTestWithStringsAndNoWeights() {
-        Graph<String> graph = DirectedGraph.create(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
+        Graph<String> graph = SimpleGraphLib.getGraphFactory().createDirectedGraph(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
         
         assertEquals(Arrays.asList(new UndirectedEdge<>("A", "B")), graph.getPath("B", "A"));
     }
     
     @Test
     public void traverseTest() {
-        Graph<String> graph =  DirectedGraph.create(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
+        Graph<String> graph =  SimpleGraphLib.getGraphFactory().createDirectedGraph(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
         
         assertEquals(Arrays.asList("AA", "BB"), graph.traverse(v -> v.toString() + v.toString()));
     }
@@ -185,7 +184,7 @@ public class GraphTest {
   
   @Test
   public void synchronizedGraphTest() {
-      Graph<String> graph =  DirectedGraph.createSynchronized(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
+      Graph<String> graph =  SimpleGraphLib.getSynchronyzedGraphFactory().createDirectedGraph(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
       
       assertEquals(Arrays.asList(new UndirectedEdge<>("A", "B")), graph.getPath("B", "A"));
   }
@@ -199,7 +198,7 @@ public class GraphTest {
   
   @Test
   public void synchronizedUndirectedGraphTest() {
-      Graph<String> graph =  UndirectedGraph.createSynchronized(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new UndirectedEdge<>("A", "B"))));
+      Graph<String> graph =  SimpleGraphLib.getSynchronyzedGraphFactory().createUndirectedGraph(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new UndirectedEdge<>("A", "B"))));
       
       assertEquals(Arrays.asList(new UndirectedEdge<>("A", "B")), graph.getPath("B", "A"));
   }

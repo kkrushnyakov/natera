@@ -3,10 +3,10 @@ package ru.krushnyakov.natera;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import ru.krushnyakov.natera.graph.DirectedEdge;
-import ru.krushnyakov.natera.graph.DirectedGraph;
-import ru.krushnyakov.natera.graph.Graph;
-import ru.krushnyakov.natera.graph.UndirectedEdge;
+import ru.krushnyakov.natera.lib.DirectedEdge;
+import ru.krushnyakov.natera.lib.Graph;
+import ru.krushnyakov.natera.lib.SimpleGraphLib;
+import ru.krushnyakov.natera.lib.UndirectedEdge;
 
 /*
 
@@ -36,11 +36,18 @@ FAQ:
 
  * 
  */
-public class SimpleGraphLib {
+public class SimpleGraphLibDemo {
     
     public static void main(String[] args) {
-        Graph<String> graph = DirectedGraph.create(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
-        System.out.print(graph.getPath("B", "A"));
+
+        Graph<String> graph = SimpleGraphLib.getGraphFactory().createDirectedGraph(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"), new DirectedEdge<>("A", "B"))));
+        
+        System.out.println(graph.getPath("B", "A"));
+
+        Graph<String> synchGraph = SimpleGraphLib.getSynchronyzedGraphFactory().createUndirectedGraph(new HashSet<>(Arrays.asList("A", "B")), new HashSet<>(Arrays.asList(new UndirectedEdge<>("A", "B"))));
+        
+        System.out.println(synchGraph.getPath("B", "A"));
+
     }
 
 }
