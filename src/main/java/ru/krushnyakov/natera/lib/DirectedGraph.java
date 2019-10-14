@@ -15,6 +15,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ * https://en.wikipedia.org/wiki/Directed_graph
+ * 
  * @author kkrushnyakov
  * @param <V> vertices type 
  *

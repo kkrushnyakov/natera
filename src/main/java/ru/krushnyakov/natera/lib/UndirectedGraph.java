@@ -6,6 +6,8 @@ package ru.krushnyakov.natera.lib;
 import java.util.Set;
 
 /**
+ * https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Undirected_graph
+ * 
  * @author kkrushnyakov
  *
  */
