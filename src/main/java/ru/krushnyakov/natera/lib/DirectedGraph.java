@@ -185,7 +185,7 @@ public class DirectedGraph<V> implements Graph<V> {
     }
 
     private List<V> unvisitedNeighboursOf(V v, Set<V> unvisitedVertices) {
-
+        if(outgoingEdges.get(v) == null) return new ArrayList<>();
         return outgoingEdges.get(v).stream().map(e -> e.getOtherVertex(v)).distinct().filter(vv -> unvisitedVertices.contains(vv))
                 .collect(Collectors.toList());
     }

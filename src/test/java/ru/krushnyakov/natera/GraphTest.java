@@ -64,7 +64,8 @@ public class GraphTest {
       
       assertEquals(Arrays.asList(new UndirectedEdge<>("A", "B", 10)
                                   ), graph.getPath("A", "B"));
-        
+      assertEquals(Arrays.asList(
+              ), graph.getPath("A", "С"));  
     }
   
     
