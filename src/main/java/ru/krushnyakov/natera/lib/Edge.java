@@ -38,6 +38,14 @@ public abstract class Edge<V> {
 
     abstract public boolean endsAt(V vertex);
 
+    /**
+     * Can we get from vertex A to vertex B by this edge?
+     * 
+     * @param vertexA
+     * @param vertexB
+     * @return
+     */
+    
     abstract public boolean connectsVertices(V vertexA, V vertexB);
 
     public V getOtherVertex(V v) {
