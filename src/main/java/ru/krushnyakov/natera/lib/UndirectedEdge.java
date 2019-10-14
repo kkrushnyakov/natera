@@ -51,8 +51,9 @@ public class UndirectedEdge<V> extends Edge<V> {
 
     @Override
     public boolean connectsVertices(V vertexA, V vertexB) {
-        return (getSource().equals(vertexA) && getDestination().equals(vertexB)) || (getSource().equals(vertexB) && getDestination().equals(vertexA));
+        return (getSource().equals(vertexA) && getDestination().equals(vertexB))
+                || (getSource().equals(vertexB) && getDestination().equals(vertexA));
 
-   }
+    }
 
 }

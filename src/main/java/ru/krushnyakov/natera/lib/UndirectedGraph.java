@@ -19,7 +19,8 @@ public class UndirectedGraph<V> extends DirectedGraph<V> {
 
     public UndirectedGraph(Set<V> vertices, Set<Edge<V>> edges) {
         super(vertices, edges);
-        if(edges.stream().anyMatch(e -> e.getClass() != UndirectedEdge.class)) throw new IllegalArgumentException("Can initialize undirected graph only with undirected edges!");
+        if (edges.stream().anyMatch(e -> e.getClass() != UndirectedEdge.class))
+            throw new IllegalArgumentException("Can initialize undirected graph only with undirected edges!");
     }
 
     @Override
