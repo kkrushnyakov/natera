@@ -28,7 +28,6 @@ public class GraphException extends Exception {
      */
     public GraphException(String message, Throwable cause) {
         super(message, cause);
-        // TODO Auto-generated constructor stub
     }
 
 }

@@ -15,7 +15,6 @@ public class SynchronizedGraphFactory implements GraphFactory {
 
     @Override
     public <V> Graph<V> createUndirectedGraph(Set<V> vertices, Set<Edge<V>> edges) {
-        // TODO Auto-generated method stub
         return new SynchronizedGraphDecorator<>(new UndirectedGraph<>(vertices, edges));
     }
 

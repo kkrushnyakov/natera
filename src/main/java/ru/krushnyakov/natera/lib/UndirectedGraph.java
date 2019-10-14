@@ -13,10 +13,6 @@ import java.util.Set;
  */
 public class UndirectedGraph<V> extends DirectedGraph<V> {
 
-    static {
-//        log = LoggerFactory.getLogger(UndirectedGraph.class);
-    }
-
     public UndirectedGraph() {
         super();
     }
